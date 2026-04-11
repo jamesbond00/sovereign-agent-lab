@@ -42,47 +42,75 @@ Conversation 3 (out of scope):
 # ── Conversation 1: Happy path ─────────────────────────────────────────────
 
 CONVERSATION_1_TRACE = """
-PASTE YOUR rasa shell TERMINAL OUTPUT HERE
+Your input ->  calling to confirm a booking                                                                                
+How many guests are you confirming for tonight's event?
+Your input ->  approx 160                                                                                                  
+And how many of those guests will need vegan meals?
+Your input ->  about 50 i think                                                                                            
+What deposit amount in GBP are you proposing to secure the booking?
+Your input ->  £200 ok?                                                                                                    
+Thank you — booking confirmed. 160 guests, 50 requiring vegan meals, £200 deposit accepted. I'll send written confirmation to the organiser shortly.
+Is there anything else I can help you with?
 """
 
-CONVERSATION_1_OUTCOME = "FILL_ME_IN"   # "confirmed" or "escalated"
+CONVERSATION_1_OUTCOME = "confirmed"   # "confirmed" or "escalated"
 
 # ── Conversation 2: Deposit too high ───────────────────────────────────────
 
 CONVERSATION_2_TRACE = """
-PASTE YOUR rasa shell TERMINAL OUTPUT HERE
+How many guests are you confirming for tonight's event?
+Your input ->  160                                                                                                         
+And how many of those guests will need vegan meals?
+Your input ->  50                                                                                                          
+What deposit amount in GBP are you proposing to secure the booking?
+Your input ->  500                                                                                                         
+I need to check one thing with the organiser before I can confirm. The issue is: a deposit of £500 exceeds the organiser's authorised limit of £300. Can I call you back within 15 minutes?
+Is there anything else I can help you with?
 """
 
-CONVERSATION_2_OUTCOME = "FILL_ME_IN"   # "confirmed" or "escalated"
-CONVERSATION_2_REASON  = "FILL_ME_IN"   # the reason the agent gave for escalating
+CONVERSATION_2_OUTCOME = "escalated"   # "confirmed" or "escalated"
+CONVERSATION_2_REASON  = "The issue is: a deposit of £500 exceeds the organiser's authorised limit of £300."   # the reason the agent gave for escalating
 
 # ── Conversation 3: Out of scope ───────────────────────────────────────────
 
 CONVERSATION_3_TRACE = """
-PASTE YOUR rasa shell TERMINAL OUTPUT HERE
+Your input ->  hey wanna confirm a booking                                                                                 
+How many guests are you confirming for tonight's event?
+Your input ->  150                                                                                                         
+And how many of those guests will need vegan meals?
+Your input ->  40                                                                                                          
+Ok, I am updating guest_count to 150 respectively.
+What deposit amount in GBP are you proposing to secure the booking?
+Your input ->  can you arrange parking for the speakers?                                                                   
+I'm sorry, I'm not trained to help with that.
+I can only help with confirming tonight's venue booking. For anything else, please contact the event organiser directly.
+Would you like to continue with confirm booking?
 """
 
 # Describe what CALM did after the out-of-scope message. Min 20 words.
 CONVERSATION_3_WHAT_HAPPENED = """
-FILL ME IN
+CALM let the user know that it is not trained with out of scope query. It explains what it can do, i.e. which queries 
+it was trained to deal with. 
 """
 
 # Compare Rasa CALM's handling of the out-of-scope request to what
 # LangGraph did in Exercise 2 Scenario 3. Min 40 words.
 OUT_OF_SCOPE_COMPARISON = """
-FILL ME IN
+Both CALM and research agent (LangGraph) identified the out of scope enquiries. CALM provided more details to the user when receiving 
+out of scope messages. My understanding that LangGraph is based on one loop whereas CALM expliciit flows with each path readable/auditable.
+E.g. utter_out_of_scope flow is exactly called this time.
 """
 
 # ── Task B: Cutoff guard ───────────────────────────────────────────────────
 
-TASK_B_DONE = None   # True or False
+TASK_B_DONE = True   # True or False
 
 # List every file you changed.
-TASK_B_FILES_CHANGED = []
+TASK_B_FILES_CHANGED = "[exercise3_rasa/actions/actions.py]"
 
 # How did you test that it works? Min 20 words.
 TASK_B_HOW_YOU_TESTED = """
-FILL ME IN
+Basically, now it is 0800PM which is past 16:45 which resulted in insufficient time to process the confirmation before the 5 PM deadline.
 """
 
 # ── CALM vs Old Rasa ───────────────────────────────────────────────────────
