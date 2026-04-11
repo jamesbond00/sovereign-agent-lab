@@ -114,6 +114,8 @@ def run_research_agent(task: str, max_turns: int = 8) -> dict:
         config={"recursion_limit": max_turns * 2},  # LangGraph uses steps, not turns
     )
 
+    print("DEBUG: Raw messages:", result["messages"])  # Debugging log
+
     tool_calls_made = []
     full_trace      = []
     final_answer    = ""
@@ -123,12 +125,20 @@ def run_research_agent(task: str, max_turns: int = 8) -> dict:
         content = m.content
 
         # Tool-call messages have structured list content
-        if isinstance(content, list):
+        # if isinstance(content, list):
+        # fix https://github.com/sovereignagents/sovereign-agent-lab/issues/2#issuecomment-4225034259
+        # the content in the response is a string, not a list
+        if isinstance(content, list) or (isinstance(content, str) and content.startswith('[') and content.endswith(']')):
+                   
+            if isinstance(content, str):
+                content = [json.loads(block) for block in json.loads(content)]
+ 
             for block in content:
-                if isinstance(block, dict) and block.get("type") == "tool_use":
+                # fix: the type was function not tool call.
+                if isinstance(block, dict) and block.get("type") in ["tool_use", "function"]:
                     entry = {
                         "tool": block["name"],
-                        "args": block.get("input", {}),
+                        "args": block.get("input", block.get("parameters", {})),
                     }
                     tool_calls_made.append(entry)
                     full_trace.append({"role": "tool_call", **entry})
