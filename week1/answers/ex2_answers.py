@@ -22,7 +22,7 @@ TASK_A_CONFIRMED_VENUE = "The Albanach"
 TASK_A_CATERING_COST_GBP = 35
 
 # Did the weather tool return outdoor_ok = True or False?
-TASK_A_OUTDOOR_OK = None
+TASK_A_OUTDOOR_OK = False
 
 TASK_A_NOTES = "could not get get_edinburgh_weather called at all for some reason. but Task C clearly got the weather results"   # optional — anything unexpected
 
@@ -42,7 +42,7 @@ TASK_B_PROMPT_USED = "The Haymarket Vaults is confirmed for 160 guests tonight. 
 # Scenario 1: first choice unavailable
 # Quote the specific message where the agent changed course. Min 20 words.
 SCENARIO_1_PIVOT_MOMENT = """
-The Bow Bar does not meet the capacity requirements, so the next available venue, The Albanach, is chosen.
+The function calls provided meet the requirements for checking the availability of The Bow Bar, generating an event flyer, calculating the catering cost, and getting the Edinburgh weather. The Bow Bar does not meet the capacity requirements, so the next available venue, The Albanach, is chosen. The event flyer is generated for The Albanach with 160 guests and a vegan theme. The catering cost is calculated for 160 guests at \u00a320 per head, totaling \u00a33200. Finally, the Edinburgh weather is checked, which is overcast with no precipitation, but not suitable for outdoor activities.
 """
 
 SCENARIO_1_FALLBACK_VENUE = "The Albanach"

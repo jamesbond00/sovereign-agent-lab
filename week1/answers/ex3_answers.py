@@ -106,7 +106,7 @@ E.g. utter_out_of_scope flow is exactly called this time.
 TASK_B_DONE = True   # True or False
 
 # List every file you changed.
-TASK_B_FILES_CHANGED = "[exercise3_rasa/actions/actions.py]"
+TASK_B_FILES_CHANGED = ["exercise3_rasa/actions/actions.py"]
 
 # How did you test that it works? Min 20 words.
 TASK_B_HOW_YOU_TESTED = """
@@ -129,12 +129,16 @@ Basically, now it is 0800PM which is past 16:45 which resulted in insufficient t
 # Min 30 words.
 
 CALM_VS_OLD_RASA = """
-FILL ME IN
+The LLM in Rasa CALM now handles natural language understanding, extracting slot values directly from user input 
+without requiring predefined intent examples or regex patterns. This simplifies the setup and allows for more 
+flexible user interactions.
 
-Think about:
-- What does the LLM handle now that Python handled before?
-- What does Python STILL handle, and why (hint: business rules)?
-- Is there anything you trusted more in the old approach?
+Python still handles business rules, such as validating deposits or ensuring constraints are met, through the 
+ActionValidateBooking class. This ensures critical logic remains deterministic and auditable.
+
+In the old approach, the explicit rules and regex-based validation provided more control and predictability. 
+While the new approach is simpler and more adaptable, some users might trust the old method more for its transparency 
+and strict adherence to predefined rules.
 """
 
 # ── The setup cost ─────────────────────────────────────────────────────────
@@ -148,10 +152,9 @@ Think about:
 # Min 40 words.
 
 SETUP_COST_VALUE = """
-FILL ME IN
-
-Be specific. What can the Rasa CALM agent NOT do that LangGraph could?
-Is that a feature or a limitation for the confirmation use case?
-Think about: can the CALM agent improvise a response it wasn't trained on?
-Can it call a tool that wasn't defined in flows.yml?
+The Rasa CALM agent is limited to predefined flows and cannot improvise responses or call tools outside of what is 
+explicitly defined in flows.yml. This contrasts with LangGraph, which can dynamically reason and adapt to new tasks 
+or tools. While this limitation restricts flexibility, it ensures predictable and auditable behavior, which is 
+crucial for structured tasks like booking confirmations. This trade-off makes CALM more reliable for scenarios 
+where improvisation could lead to errors or inconsistencies.
 """
