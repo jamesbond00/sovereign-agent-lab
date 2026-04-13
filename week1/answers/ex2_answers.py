@@ -19,7 +19,7 @@ TASK_A_CONFIRMED_VENUE = "The Albanach"
 
 # Total catering cost the agent calculated. Float, e.g. 5600.0
 # Write 0.0 if the agent didn't calculate it.
-TASK_A_CATERING_COST_GBP = 35
+TASK_A_CATERING_COST_GBP = 5600.0
 
 # Did the weather tool return outdoor_ok = True or False?
 TASK_A_OUTDOOR_OK = False
