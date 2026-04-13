@@ -88,6 +88,7 @@ def check_pub_availability(
     Do NOT use this to browse or search — you must already know the pub name.
     Known venues: The Albanach, The Haymarket Vaults, The Guilford Arms, The Bow Bar.
     """
+    print(f"DEBUG: Starting check_pub_availability for {pub_name}...")
     venue = VENUES.get(pub_name)
     if not venue:
         return json.dumps({
@@ -102,6 +103,7 @@ def check_pub_availability(
         and venue["status"] == "available"
     )
 
+    print(f"DEBUG: Finished check_pub_availability.")
     return json.dumps({
         "success": True,
         "pub_name": pub_name,
@@ -121,6 +123,7 @@ def get_edinburgh_weather() -> str:
     outdoor_ok is True only when conditions are clear or mainly clear.
     Use this to advise whether an outdoor area at the venue is suitable.
     """
+    print("DEBUG: Starting get_edinburgh_weather (network call)...")
     try:
         resp = requests.get(
             "https://api.open-meteo.com/v1/forecast",
@@ -140,6 +143,7 @@ def get_edinburgh_weather() -> str:
             3: "Overcast", 45: "Fog", 61: "Light rain", 63: "Moderate rain",
             65: "Heavy rain", 80: "Rain showers", 95: "Thunderstorm",
         }
+        print("DEBUG: Finished get_edinburgh_weather.")
         return json.dumps({
             "success": True,
             "temp_c": data.get("temperature_2m"),
@@ -160,11 +164,13 @@ def calculate_catering_cost(guests: int, price_per_head_gbp: float) -> str:
     Use AFTER confirming a venue. Do NOT call before a venue is confirmed.
     Returns total_cost_gbp, guests, and price_per_head_gbp.
     """
+    print(f"DEBUG: Starting calculate_catering_cost for {guests} guests...")
     if guests <= 0 or price_per_head_gbp < 0:
         return json.dumps({
             "success": False,
             "error": "guests must be > 0 and price_per_head_gbp must be >= 0",
         })
+    print("DEBUG: Finished calculate_catering_cost.")
     return json.dumps({
         "success": True,
         "guests": guests,
@@ -183,6 +189,7 @@ def generate_event_flyer(venue_name: str, guest_count: int, event_theme: str) ->
     guest_count: confirmed number of attendees
     event_theme: short description, e.g. 'AI Meetup, professional, Scottish'
     """
+    print(f"DEBUG: Starting generate_event_flyer for {venue_name} (image generation call)...")
     # ── TODO: Replace this stub with a real images.generate() call ───────────
     #
     # 1. Import OpenAI at the top of this file: - Completed
@@ -218,6 +225,7 @@ def generate_event_flyer(venue_name: str, guest_count: int, event_theme: str) ->
     #
     # When implemented, the mechanical check in grade.py will pass automatically.
     # ──────────────────────────────────────────────────────────────────────────
+        print("DEBUG: Finished generate_event_flyer.")
         return json.dumps({
         "success": True,
         "prompt_used": prompt,
@@ -239,13 +247,3 @@ def generate_event_flyer(venue_name: str, guest_count: int, event_theme: str) ->
              "image_url": url,
              })
 
-    # prompt = (
-    #     f"Professional event flyer for {event_theme} at {venue_name}, "
-    #     f"Edinburgh. {guest_count} guests."
-    # )
-    # return json.dumps({
-    #     "success": False,
-    #     "error": "STUB — see TODO in sovereign_agent/tools/venue_tools.py",
-    #     "prompt_used": prompt,
-    #     "image_url": "",
-    # })
