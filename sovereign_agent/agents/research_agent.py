@@ -86,7 +86,14 @@ TOOLS = [
 
 # Build the agent once at module load time.
 # Rebuilding it on every call would be wasteful.
-_agent = create_react_agent(llm, TOOLS)
+system_prompt = (
+    "You are a research agent for Rod's Edinburgh event. "
+    "To call tools, you MUST use the standard tool-calling schema. "
+    "Do NOT return a JSON list of strings as your message content. "
+    "Think step by step. If multiple tools are needed, call them one by one "
+    "or in parallel using the tool_calls field."
+)
+_agent = create_react_agent(llm, TOOLS, prompt=system_prompt)
 
 
 # ─── Public interface ─────────────────────────────────────────────────────────
@@ -123,26 +130,38 @@ def run_research_agent(task: str, max_turns: int = 8) -> dict:
     for m in result["messages"]:
         role    = getattr(m, "type", "unknown")
         content = m.content
+        
+        # 1. Handle standard tool_calls attribute (used by standard models/APIs)
+        if hasattr(m, "tool_calls") and m.tool_calls:
+            for tc in m.tool_calls:
+                entry = {
+                    "tool": tc["name"],
+                    "args": tc["args"],
+                }
+                tool_calls_made.append(entry)
+                full_trace.append({"role": "tool_call", **entry})
+            continue
 
-        # Tool-call messages have structured list content
-        # if isinstance(content, list):
-        # fix https://github.com/sovereignagents/sovereign-agent-lab/issues/2#issuecomment-4225034259
-        # the content in the response is a string, not a list
+        # 2. Handle custom JSON-in-content format (sometimes used by Llama on certain APIs)
         if isinstance(content, list) or (isinstance(content, str) and content.startswith('[') and content.endswith(']')):
                    
             if isinstance(content, str):
-                content = [json.loads(block) for block in json.loads(content)]
+                try:
+                    content = [json.loads(block) for block in json.loads(content)]
+                except (json.JSONDecodeError, TypeError):
+                    # Fallback if it's not actually a JSON list
+                    pass
  
-            for block in content:
-                # fix: the type was function not tool call.
-                if isinstance(block, dict) and block.get("type") in ["tool_use", "function"]:
-                    entry = {
-                        "tool": block["name"],
-                        "args": block.get("input", block.get("parameters", {})),
-                    }
-                    tool_calls_made.append(entry)
-                    full_trace.append({"role": "tool_call", **entry})
-            continue
+            if isinstance(content, list):
+                for block in content:
+                    if isinstance(block, dict) and block.get("type") in ["tool_use", "function"]:
+                        entry = {
+                            "tool": block["name"],
+                            "args": block.get("input", block.get("parameters", {})),
+                        }
+                        tool_calls_made.append(entry)
+                        full_trace.append({"role": "tool_call", **entry})
+                continue
 
         if content:
             full_trace.append({"role": role, "content": str(content)})
