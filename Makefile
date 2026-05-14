@@ -324,7 +324,7 @@ smoke: check-env ## Verify API connection and key are working
 .PHONY: test
 test: ## Run unit tests — checks your tool implementations (no API calls)
 	@echo "$(BLUE)Running tool unit tests...$(RESET)"
-	$(UV) run pytest sovereign_agent/tests/test_week1.py -v
+	$(UV) run pytest sovereign_agent/tests/test_week1.py -v -p no:capture
 	@echo ""
 	@echo "$(YELLOW)Fix any failures above before running the exercises.$(RESET)"
 
