@@ -63,7 +63,9 @@ TASK_B_PROMPT_USED = "The Haymarket Vaults is confirmed for 160 guests tonight. 
 # Why did the agent's behaviour NOT change when Nebius removed FLUX?
 # One sentence. This is the point of the lesson.
 TASK_B_WHY_AGENT_SURVIVED = """
-FILL ME IN
+The agent only depended on the tool contract returning structured fields like
+success, prompt_used, and image_url, so the flyer tool could switch from the
+removed FLUX model to a fallback URL without changing the agent loop.
 """
 
 # ── Task C ─────────────────────────────────────────────────────────────────
